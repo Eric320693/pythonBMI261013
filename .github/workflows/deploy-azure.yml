@@ -27,7 +27,6 @@ jobs:
     env:
       AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
       AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
-
       PYTHON_RUNTIME_VERSION: 3.14.8
     steps:
       - uses: actions/checkout@v4
