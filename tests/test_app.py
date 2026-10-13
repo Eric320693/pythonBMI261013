@@ -21,6 +21,13 @@ class BmiAppTests(unittest.TestCase):
         self.assertIn("健康體位", page)
         self.assertIn("維持均衡飲食", page)
 
+    def test_result_tone_classes_for_weight_status(self):
+        underweight = self.client.post("/", data={"height": "170", "weight": "50"})
+        overweight = self.client.post("/", data={"height": "170", "weight": "75"})
+
+        self.assertIn('class="result-panel low"', underweight.get_data(as_text=True))
+        self.assertIn('class="result-panel high"', overweight.get_data(as_text=True))
+
     def test_taiwan_adult_thresholds(self):
         for bmi, category in [
             (18.4, "體重過輕"),
