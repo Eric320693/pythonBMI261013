@@ -36,6 +36,12 @@
               <form method="post" action="{{ url_for('index') }}" novalidate>
                 <div class="form-fields">
                   <div class="field">
+                    <label for="name">姓名 <span>NAME</span></label>
+                    <div class="input-wrap">
+                      <input id="name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="例如 王小明" value="{{ name_input }}">
+                    </div>
+                  </div>
+                  <div class="field">
                     <label for="height">身高 <span>HEIGHT</span></label>
                     <div class="input-wrap">
                       <input id="height" name="height" type="number" inputmode="decimal" min="0.01" step="any" placeholder="例如 170" value="{{ height_input }}" required {% if errors.height %}aria-invalid="true" aria-describedby="height-error"{% endif %}>
@@ -67,6 +73,7 @@
                 </div>
                 <div class="result-divider"></div>
                 <span class="result-label">你的體位屬於 <strong>{{ result.label }}</strong></span>
+                {% if name_input %}<p class="result-name">您好，{{ name_input }}！</p>{% endif %}
                 <h2 id="result-title">給你的健康建議</h2>
                 <p>{{ result.advice }}</p>
                 <span class="result-decoration" aria-hidden="true">✳</span>

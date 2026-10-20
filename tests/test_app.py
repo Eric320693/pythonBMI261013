@@ -13,13 +13,21 @@ class BmiAppTests(unittest.TestCase):
         page = response.get_data(as_text=True)
         self.assertIn("了解自己的<br><em>健康狀況。</em>", page)
         self.assertIn("計算你的 BMI", page)
+        self.assertIn('id="name"', page)
 
     def test_calculation_and_advice(self):
-        response = self.client.post("/", data={"height": "170", "weight": "65"})
+        response = self.client.post("/", data={"name": "王小明", "height": "170", "weight": "65"})
         page = response.get_data(as_text=True)
         self.assertIn("22.5", page)
         self.assertIn("健康體位", page)
         self.assertIn("維持均衡飲食", page)
+        self.assertIn("您好，王小明！", page)
+
+    def test_name_is_escaped(self):
+        response = self.client.post("/", data={"name": "<script>alert(1)</script>", "height": "170", "weight": "65"})
+        page = response.get_data(as_text=True)
+        self.assertNotIn("<script>alert(1)</script>", page)
+        self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", page)
 
     def test_taiwan_adult_thresholds(self):
         for bmi, category in [
