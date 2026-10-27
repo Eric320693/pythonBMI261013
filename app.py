@@ -20,7 +20,7 @@ def bmi_guidance(bmi):
         }
     if bmi < 27:
         return {
-            "label": "體重過重",
+            "label": "過重",
             "tone": "high",
             "advice": "可從減少含糖飲料、增加蔬菜與日常活動量開始，循序建立適合自己的健康習慣。",
         }
