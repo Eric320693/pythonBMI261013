@@ -23,6 +23,7 @@ concurrency:
 
 jobs:
   deploy:
+    environment: staging
     runs-on: windows-latest
     env:
       AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
@@ -78,4 +79,29 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: staging
           package: dist
+
+  swap:
+    needs: deploy
+    environment: production
+    runs-on: windows-latest
+    env:
+      AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+    steps:
+      - name: Sign in to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Swap staging slot into production
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          az webapp deployment slot swap `
+            --resource-group $env:AZURE_RESOURCE_GROUP `
+            --name $env:AZURE_WEBAPP_NAME `
+            --slot staging `
+            --target-slot production
+          if ($LASTEXITCODE -ne 0) { throw 'Azure Web App slot swap failed' }
