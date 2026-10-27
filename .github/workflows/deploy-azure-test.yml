@@ -36,7 +36,7 @@ jobs:
         with:
           python-version: '3.14'
 
-      - 
+      
       - name: Install dependencies and run tests
         run: |
           python -m pip install -r requirements.txt
@@ -52,13 +52,6 @@ jobs:
             -Dsonar.organization=${{ secrets.SONAR_ORGKEY }}
             -Dsonar.sources=.
             -Dsonar.python.version=3.14
-
-      - name: Package Windows Python app
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          New-Item -ItemType Directory -Force dist\runtime | Out-Null
-
 
       - name: Package Windows Python app
         shell: pwsh
