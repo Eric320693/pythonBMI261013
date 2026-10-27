@@ -14,13 +14,13 @@ def bmi_guidance(bmi):
         }
     if bmi < 24:
         return {
-            "label": "健康體位",
+            "label": "健康",
             "tone": "healthy",
             "advice": "維持均衡飲食與規律運動，並持續留意睡眠及生活習慣，幫助保持健康體位。",
         }
     if bmi < 27:
         return {
-            "label": "體重過重",
+            "label": "過重",
             "tone": "high",
             "advice": "可從減少含糖飲料、增加蔬菜與日常活動量開始，循序建立適合自己的健康習慣。",
         }

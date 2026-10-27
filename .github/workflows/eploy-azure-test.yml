@@ -1,8 +1,8 @@
-name: Deploy BMI to Azure
+name: Deploy BMI to Azure Test Slot
 
 on:
   push:
-    branches: [main]
+    branches: [dev]
     paths:
       - app.py
       - serve.py
@@ -11,20 +11,19 @@ on:
       - templates/**
       - static/**
       - tests/**
-      - .github/workflows/deploy-azure.yml
+      - .github/workflows/eploy-azure-test.yml
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: azure-bmi-production
+  group: azure-bmi-test
   cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: windows-latest
-    environment: staging
     env:
       AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
       AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
@@ -75,32 +74,9 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Azure Web App lookup failed' }
           if ($platform.Trim().ToLowerInvariant() -ne 'false') { throw 'Target must be a Windows Azure Web App' }
 
-      - name: Deploy to Azure Web App staging slot
+      - name: Deploy to Azure Test Slot
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          slot-name: staging
+          slot-name: test
           package: dist
-
-  promote:
-    needs: deploy
-    runs-on: windows-latest
-    environment: production
-    env:
-      AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
-      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
-    steps:
-      - name: Sign in to Azure
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Swap staging slot with production slot
-        shell: pwsh
-        run: |
-          az webapp deployment slot swap `
-            --resource-group $env:AZURE_RESOURCE_GROUP `
-            --name $env:AZURE_WEBAPP_NAME `
-            --slot staging `
-            --target-slot production
-          if ($LASTEXITCODE -ne 0) { throw 'Azure Web App slot swap failed' }
