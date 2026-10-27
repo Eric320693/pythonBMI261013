@@ -23,6 +23,35 @@ class BmiAppTests(unittest.TestCase):
         self.assertIn("維持均衡飲食", page)
         self.assertIn("您好，王小明！", page)
 
+    def test_compares_bmi_with_target(self):
+        response = self.client.post(
+            "/",
+            data={"height": "170", "weight": "65", "target_bmi": "22"},
+        )
+
+        page = response.get_data(as_text=True)
+        self.assertIn("目標 BMI", page)
+        self.assertIn("22.0", page)
+        self.assertIn("距離目標還需要降低 0.5 BMI", page)
+
+    def test_target_bmi_can_be_reached(self):
+        response = self.client.post(
+            "/",
+            data={"height": "170", "weight": "63.58", "target_bmi": "22"},
+        )
+
+        self.assertIn("恭喜你，已達到目標 BMI！", response.get_data(as_text=True))
+
+    def test_rejects_target_bmi_outside_reasonable_range(self):
+        response = self.client.post(
+            "/",
+            data={"height": "170", "weight": "65", "target_bmi": "5"},
+        )
+
+        page = response.get_data(as_text=True)
+        self.assertIn("請輸入 10 至 50 之間的目標 BMI", page)
+        self.assertNotIn("距離目標還需要", page)
+
     def test_name_is_escaped(self):
         response = self.client.post("/", data={"name": "<script>alert(1)</script>", "height": "170", "weight": "65"})
         page = response.get_data(as_text=True)

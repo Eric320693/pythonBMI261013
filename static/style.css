@@ -27,7 +27,7 @@ h1 em { color: #5a8765; font-style: normal; }
 .card-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
 .card-heading h2 { margin: 7px 0 0; font-size: 21px; letter-spacing: -.04em; }
 .card-icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: #edf4ec; color: #386d4e; font-size: 20px; }
-.form-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.form-fields { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
 .field label { display: flex; align-items: baseline; gap: 7px; margin-bottom: 10px; font-size: 13px; font-weight: 700; }
 .field label span { color: #a6b4a9; font-size: 10px; font-weight: 600; letter-spacing: .08em; }
 .input-wrap { position: relative; }
@@ -66,6 +66,13 @@ button span { font-size: 20px; font-weight: 400; }
 .result-name { position: relative; z-index: 1; margin: 16px 0 0; color: #4f6657; font-size: 14px; }
 .result-panel h2 { position: relative; z-index: 1; margin: 31px 0 10px; font-size: 17px; }
 .result-panel p { position: relative; z-index: 1; max-width: 340px; margin: 0; color: #4f6657; font-size: 14px; line-height: 1.9; }
+.goal-summary { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; margin-top: 24px; padding: 14px 16px; border: 1px solid #c5dbc1; border-radius: 10px; background: #f5faf2a8; }
+.goal-summary > div { display: flex; flex-direction: column; gap: 3px; }
+.goal-summary span { color: #6d8671; font-size: 11px; }
+.goal-summary strong { color: #285a43; font-size: 20px; }
+.goal-summary p { grid-column: 1 / -1; margin: 0; font-size: 13px; line-height: 1.6; }
+.goal-summary.goal-reached { border-color: #9dc39b; background: #edf8eb; }
+.goal-summary.goal-reached p { color: #2f7044; font-weight: 700; }
 .result-decoration { position: absolute; right: -30px; bottom: -87px; color: #d0e3ca; font-size: 260px; line-height: 1; }
 .information { display: grid; grid-template-columns: 1fr 1fr; gap: 10%; padding: 40px 0 45px; border-top: 1px solid #e1e5dc; }
 .about h2 { margin: 17px 0 16px; font-size: 28px; letter-spacing: -.04em; }

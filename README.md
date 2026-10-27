@@ -1,6 +1,6 @@
 # BMI 計算器
 
-使用 Flask 製作的成人 BMI 網頁計算器。可輸入姓名、身高（公分）和體重（公斤）；送出後頁面會顯示個人化稱呼、BMI（小數點後一位）、體位分類與生活建議。
+使用 Flask 製作的成人 BMI 網頁計算器。可輸入姓名、身高（公分）、體重（公斤）與選填的目標 BMI；送出後頁面會顯示個人化稱呼、BMI（小數點後一位）、體位分類、生活建議，以及目前 BMI 與目標的差距。
 
 ## 啟動
 
@@ -34,3 +34,16 @@ BMI = 體重（公斤）÷ 身高（公尺）²。分類採臺灣成人體位參
 - Repository secret `AZURE_CREDENTIALS`：Azure 服務主體的 `clientId`、`clientSecret`、`subscriptionId`、`tenantId` 組成的 JSON。此 Secret 已設定，不要把內容寫進程式碼。
 
 請確認該服務主體對 `NTUSTweb00` 具有部署權限（例如該站點的 **Website Contributor**）。推送符合上述條件的 `main` 分支異動，或從 GitHub Actions 手動執行工作流程即可部署。
+
+## Project Ready items 自動補齊需求
+
+`.github/workflows/update-ready-project-items.yml` 每 15 分鐘及手動執行一次，檢查使用者 Project #2 中 Status 為 `Ready` 的 issue。若 issue 缺少 `## User Story` 或 `## Acceptance Criteria`，流程會參考 title 呼叫 OpenAI 相容的 Chat Completions API 產生內容並更新 issue；Acceptance Criteria 會以 `- [ ]` checklist 寫入，既有的非空白區段不會被覆蓋。
+
+工作流程需要在 **Settings → Secrets and variables → Actions** 設定：
+
+- `PROJECTS_TOKEN` secret：具備該 repository `Issues: Read and write` 及使用者 Projects 存取權的 fine-grained token。若未設定，流程會退回使用 `GITHUB_TOKEN`。
+- `AI_API_KEY` secret：AI provider 的 API key。
+- `AI_API_URL` variable（選用）：OpenAI 相容 Chat Completions endpoint，預設為 `https://api.openai.com/v1/chat/completions`。
+- `AI_MODEL` variable（選用）：模型名稱，預設為 `gpt-4o-mini`。
+
+此功能也封裝成 repo-local Agent Skill：`.github/skills/ready-project-requirements/SKILL.md`。當需要手動要求 Copilot 處理 Ready items 時，可使用 `ready-project-requirements` skill。

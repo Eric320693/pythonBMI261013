@@ -1,0 +1,30 @@
+name: Update Ready project items
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: update-ready-project-items
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.PROJECTS_TOKEN || github.token }}
+      AI_API_KEY: ${{ secrets.AI_API_KEY }}
+      AI_API_URL: ${{ vars.AI_API_URL || 'https://api.openai.com/v1/chat/completions' }}
+      AI_MODEL: ${{ vars.AI_MODEL || 'gpt-4o-mini' }}
+      PROJECT_OWNER: Eric320693
+      PROJECT_NUMBER: "2"
+      READY_STATUS: Ready
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate missing requirements
+        run: python .github/scripts/update_ready_project_items.py
