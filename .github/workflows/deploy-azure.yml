@@ -68,11 +68,11 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Verify Windows Web App
+      - name: Verify Windows Web App staging slot
         shell: pwsh
         run: |
-          $platform = az webapp show --resource-group $env:AZURE_RESOURCE_GROUP --name $env:AZURE_WEBAPP_NAME --query reserved --output tsv
-          if ($LASTEXITCODE -ne 0) { throw 'Azure Web App lookup failed' }
+          $platform = az webapp show --resource-group $env:AZURE_RESOURCE_GROUP --name $env:AZURE_WEBAPP_NAME --slot staging --query reserved --output tsv
+          if ($LASTEXITCODE -ne 0) { throw 'Azure Web App staging slot lookup failed' }
           if ($platform.Trim().ToLowerInvariant() -ne 'false') { throw 'Target must be a Windows Azure Web App' }
 
       - name: Deploy to Azure Web App staging slot
@@ -82,7 +82,7 @@ jobs:
           slot-name: staging
           package: dist
 
-  promote:
+  swap:
     needs: deploy
     runs-on: windows-latest
     environment: production
@@ -95,12 +95,9 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Swap staging slot with production slot
+      - name: Swap staging slot into production
         shell: pwsh
         run: |
-          az webapp deployment slot swap `
-            --resource-group $env:AZURE_RESOURCE_GROUP `
-            --name $env:AZURE_WEBAPP_NAME `
-            --slot staging `
-            --target-slot production
+          az webapp deployment slot swap --resource-group $env:AZURE_RESOURCE_GROUP --name $env:AZURE_WEBAPP_NAME --slot staging --target-slot production
           if ($LASTEXITCODE -ne 0) { throw 'Azure Web App slot swap failed' }
+
