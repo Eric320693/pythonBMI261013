@@ -11,7 +11,7 @@ on:
       - templates/**
       - static/**
       - tests/**
-      - .github/workflows/eploy-azure-test.yml
+      - .github/workflows/deploy-azure-test.yml
   workflow_dispatch:
 
 permissions:
@@ -24,6 +24,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: windows-latest
+    environment: test
     env:
       AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
       AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
